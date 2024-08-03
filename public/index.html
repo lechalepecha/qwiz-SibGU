@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Космическая гонка</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body id="particles-js"> 
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>   
+  <script src="../../styleScripts.js"></script>
+
+  <div id="app" style="display: flex; flex-direction: column;"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const app = document.getElementById('app');
+    var gameStarted =false;
+
+    const state = {
+      roomId: null,
+      nickname: null,
+      users: [],
+      isCreator: false,
+      images: [
+        'file1.png',
+        'file2.png',
+        'file3.png',
+        'file4.png',
+        'file5.png',
+        'file6.png',
+        'file7.png',
+        'file8.png',
+        'file9.png',
+        'file10.png',
+        'file11.png',
+        'file12.png',
+        'file13.png',
+        'file14.png',
+        'file15.png',
+        'file16.png',
+      ],
+    };
+
+    function renderView(view) {
+      app.innerHTML = view;
+    }
+
+    function renderMainForm() {
+      renderView(`
+        <form id="form" class="form-main" style="margin-top: 20px;">
+          <div class="div-main">
+            <h1>Код комнаты</h1>
+            <input type="text" id="input-room-code" placeholder="Введите код комнаты" class="input-main">
+          </div>
+          <div class="div-main">
+            <h1>Никнейм</h1>
+            <input type="text" id="input-nickname" placeholder="Введите ваше имя" class="input-main">
+          </div>
+          <div class="div-main">
+            <button id="Connect" type="button" class="button-main">
+              <span>Присоединиться к игре</span>
+            </button>
+          </div>
+          <div class="div-main">
+            <button id="CreateGame" type="button" class="button-main">
+              <span>Создать игру</span>
+            </button>
+          </div>
+        </form>
+      `);
+
+      const inputRoomCode = document.getElementById('input-room-code');
+      const inputNickname = document.getElementById('input-nickname');
+      const buttonCreation = document.getElementById('CreateGame');
+      const buttonConnection = document.getElementById('Connect');
+
+      buttonCreation.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nickname = inputNickname.value.trim();
+        if (nickname) {
+          state.nickname = nickname;
+          socket.emit('create-room');
+        } else {
+          alert('Введите ваш никнейм');
+        }
+      });
+
+      buttonConnection.addEventListener('click', (e) => {
+        e.preventDefault();
+        const roomCode = inputRoomCode.value.trim();
+        const nickname = inputNickname.value.trim();
+        if (roomCode && nickname) {
+          state.roomId = roomCode;
+          state.nickname = nickname;
+          socket.emit('join-room', roomCode, nickname);
+        } else {
+          alert('Введите код комнаты и ваш никнейм');
+        }
+      });
+    }
+
+    function renderLobby() {
+      renderView(`
+        <div class="form-main" style="margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px; width: 50%;">
+          <div class="div-main" style="height: 40px;">
+            <h1 style="text-align: center; text-transform:none;">ОЖИДАНИЕ ИГРОКОВ: ${state.roomId}</h1>
+          </div>
+          <div id="connected-users" class="div-main" style="min-height:150px; justify-content: flex-start; flex-direction: column;">
+          
+          </div>
+          
+          <div class="div-main">
+            <button id="ready-button" class="button-main" type="button">
+              <span>Готов</span>
+            </button>
+          </div>
+        </div>
+      `);
+
+      const readyButton = document.getElementById('ready-button');
+      readyButton.addEventListener('click', () => {
+        socket.emit('player-ready', state.roomId, state.nickname);
+        readyButton.disabled = true;
+      });
+
+      updateLobbyUsers();
+    }
+
+    function renderGameInterface() {
+      if (state.isCreator) {
+        renderCreatorInterface();
+      } else {
+        renderPlayerInterface();
+      }
+
+    }
+
+    function renderCreatorInterface() {
+      renderView(`
+          <div style="display: flex; flex-direction: row;">
+            <div style="display: flex; flex-direction: column; width:25%; margin:20px 5px;">
+              <form action="" class="form-main" style="width: 100%; margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
+                <div class="div-main" style="height: 40px;">
+                    <h1 style="text-align: center; ">Вопрос #1</h1>
+                </div>
+                <div class="div-main" style="height:150px; justify-content: flex-start;">
+                    <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">##############################################.#################?</h1>
+                </div>
+              </form>
+
+              <form action="" class="form-main" style="width: 100%;">
+                <div class="div-main question">
+                    <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
+                        <span>Ответ #1</span>
+                    </Button>
+                    <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
+                        <span>Ответ #2</span>
+                    </Button>
+                    <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
+                        <span>Ответ #3</span>
+                    </Button>
+                    <Button id="btn1" role="button" type="button" class="button-main answer" style="width: 100%;">
+                        <span>Ответ #4</span>
+                    </Button>
+                </div>
+              </form>
+            </div>
+
+            <div id="connected-users" style="width: 70%; display: flex; flex-direction: column; height: auto; margin: 40px 5px ;">
+            </div>
+
+
+            <div style="width: 5%; height:100%;">
+
+            </div>
+  </div>
+      `);
+
+      updateLobbyGame();
+    }
+
+    function renderPlayerInterface() {
+      renderView(`
+
+        <form action="" class="form-main" style="margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
+            <div class="div-main" style="height: 40px;">
+                <h1 style="text-align: center; ">Вопрос #1</h1>
+            </div>
+            <div class="div-main" style="height:150px; justify-content: flex-start;">
+                <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">##############################################.#################?</h1>
+            </div>
+        </form>
+
+        <form action="" class="form-main">
+            <div class="div-main question">
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #1</span>
+                </Button>
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #2</span>
+                </Button>
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #3</span>
+                </Button>
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #4</span>
+                </Button>
+            </div>
+        </form>
+      `);
+    }
+
+    function updateLobbyUsers() {
+      const userList = document.getElementById('connected-users');
+      if (userList) {
+        userList.innerHTML = '';
+        state.users.forEach(user => {
+          const imageUrl = `../Images/Player/${user.image}`;
+          userList.innerHTML += `
+            <div class ="player" style="display: flex; flex-direction: row; flex-wrap: nowrap; width: 80%; margin: 5 auto; align-items: center;">
+              <img src="${imageUrl}" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 70px; height: 90px; object-fit: cover;">
+              <div style="margin: 0 15px;">
+                <span>${user.nickname} ${user.ready ? '(Готов)' : ''}</span>
+              </div>
+            </div>
+          `;
+          
+        });
+      }
+    }
+
+    function updateLobbyGame() {
+      const userList = document.getElementById('connected-users');
+      if (userList) {
+        userList.innerHTML = '';
+        state.users.forEach(user => {
+          const imageUrl = `../Images/Player/${user.image}`;
+          userList.innerHTML += `
+            <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: 90px; margin: 5px 0; ">
+              <div style="margin: 0 15px; color: white; text-align:center;">
+                <span style="text-align:center;">${user.nickname}</span>
+              </div>
+              <img src="${imageUrl}" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+            </div>
+          `;
+          
+        });
+      }
+    }
+
+    socket.on('room-created', (roomId) => {
+      state.roomId = roomId;
+      state.isCreator = true;
+      renderLobby();
+    });
+
+    socket.on('room-joined', (roomId, users) => {
+      state.roomId = roomId;
+      state.users = users;
+      renderLobby();
+    });
+
+    socket.on('user-joined', (users) => {
+      state.users = users;
+      updateLobbyUsers();
+    });
+
+    socket.on('user-left', (users) => {
+      state.users = users;
+      if(gameStarted){
+        updateLobbyGame();
+        console.log(gameStarted);
+      }
+      else{
+        updateLobbyUsers();
+      }
+
+    });
+
+    socket.on('start-game', () => {
+      renderGameInterface();
+      gameStarted = true;
+    });
+
+    socket.on('disconnect', () => {
+      alert('Вы были отключены от сервера.');
+      renderMainForm();
+    });
+
+    socket.on('error', (message) => {
+      alert(message);
+    });
+
+    // Initial view
+    renderMainForm();
+  </script>
+</body>
+</html>

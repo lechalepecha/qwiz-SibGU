@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Космическая гонка</title>
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body id="particles-js"> 
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>   
+  <script src="./styleScripts.js"></script>
+  <div style="display: flex; flex-direction: row;">
+    <div style="display: flex; flex-direction: column; width:25%; margin:20px 5px;">
+      <form action="" class="form-main" style="width: 100%; margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
+        <div class="div-main" style="height: 40px;">
+            <h1 style="text-align: center; ">Вопрос #1</h1>
+        </div>
+        <div class="div-main" style="height:150px; justify-content: flex-start;">
+            <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">##############################################.#################?</h1>
+        </div>
+      </form>
+
+      <form action="" class="form-main" style="width: 100%;">
+        <div class="div-main question">
+            <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
+                <span>Ответ #1</span>
+            </Button>
+            <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
+                <span>Ответ #2</span>
+            </Button>
+            <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
+                <span>Ответ #3</span>
+            </Button>
+            <Button id="btn1" role="button" type="button" class="button-main answer" style="width: 100%;">
+                <span>Ответ #4</span>
+            </Button>
+        </div>
+      </form>
+    </div>
+
+    <div style="width: 70%; display: flex; flex-direction: column; height: auto; margin: 40px 5px ;">
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+      <div id="player" style="display: flex; flex-direction: column; flex-wrap: nowrap; width: auto; margin: 5px 0; ">
+        <div style="margin: 0 15px; color: white;">
+          <span>игрок 1</span>
+        </div>
+        <img src="./Images/Player/file10.png" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 90px; height: 70px; object-fit: cover;">
+      </div>
+
+
+    </div>
+
+
+    <div style="width: 5%; height:100%;">
+
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById("btn1");
+    const pl = document.getElementById("player");
+    var score = 0;
+
+    function moveX(element, distance) {
+      element.style.transform = `translateX(${distance}px)`;
+    }
+
+    btn.addEventListener("click", ()=> {
+      score +=100;
+      moveX(pl, score);
+    })
+  </script>
+</body>
+</html>

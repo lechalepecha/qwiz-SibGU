@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Космическая гонка</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <form action="" class="form-main" style="margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
+            <div class="div-main" style="height: 40px;">
+                <h1 style="text-align: center; ">Вопрос #1</h1>
+            </div>
+            <div class="div-main" style="height:150px; justify-content: flex-start;">
+                <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">##############################################.#################?</h1>
+            </div>
+        </form>
+        <form action="" class="form-main">
+            <div class="div-main question">
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #1</span>
+                </Button>
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #2</span>
+                </Button>
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #3</span>
+                </Button>
+                <Button id="btn" role="button" class="button-main answer">
+                    <span>Ответ #4</span>
+                </Button>
+            </div>
+
+            <div class="div-main" id="connected-users" style="min-height:150px; justify-content: flex-start; flex-direction: column;">
+       
+            </div>
+
+        </form>
+    </body>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const queryParams = new URLSearchParams(window.location.search);
+        const roomId = queryParams.get('roomId');
+        
+
+        
+      </script>
+</html>
+
+<script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const queryParams = new URLSearchParams(window.location.search);
+    const roomId = queryParams.get('roomId');
+    const nickname = queryParams.get('nickname');
+
+    const images = [
+      'file1.png',
+      'file2.png',
+      'file3.png',
+      'file4.png',
+      'file5.png',
+      // Добавьте сюда остальные имена файлов изображений
+    ];
+
+    // Эмитировать событие 'join-room' при загрузке страницы
+    socket.emit('join-room', roomId, nickname);
+
+    const readyButton = document.getElementById('ready-button');
+    readyButton.addEventListener('click', () => {
+      socket.emit('player-ready', roomId, nickname);
+      readyButton.disabled = true;
+    });
+
+    // Обработка события 'user-joined'
+    socket.on('user-joined', (users) => {
+      const userList = document.getElementById('connected-users');
+      userList.innerHTML = ''; // Очищаем список перед добавлением
+      users.forEach(user => {
+        const imageUrl = `../Images/Player/${images[Math.floor(Math.random() * images.length)]}`;
+        userList.innerHTML += `
+          <div style="display: flex; flex-direction: row; flex-wrap: nowrap; width: 80%; margin: 0 auto; align-items: center;">
+            <img src="${imageUrl}" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 70px; height: 90px; object-fit: cover;">
+            <div style="margin: 0 15px;">
+              <span>${user.nickname} ${user.ready ? '(Готов)' : ''}</span>
+            </div>
+          </div>
+        `;
+      });
+    });
+
+    // Обработка события 'start-game'
+    socket.on('start-game', (isCreator) => {
+      if (isCreator) {
+        window.location.href = `/creator.html?roomId=${roomId}`;
+      } else {
+        window.location.href = `/player.html?roomId=${roomId}`;
+      }
+    });
+
+    // Обработка события 'disconnect'
+    socket.on('disconnect', () => {
+      alert('Вы были отключены от сервера.');
+      window.location.href = '/';
+    });
+  </script>
