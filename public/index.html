@@ -128,42 +128,41 @@
       updateLobbyUsers();
     }
 
-    function renderGameInterface() {
+    socket.on('next-question', (questionData) => {
+      renderGameInterface(questionData);
+    });
+
+    function renderGameInterface(questionData) {
       if (state.isCreator) {
-        renderCreatorInterface();
+        renderCreatorInterface(questionData);
       } else {
-        renderPlayerInterface();
+        renderPlayerInterface(questionData);
       }
 
     }
 
-    function renderCreatorInterface() {
+    function renderCreatorInterface(questionData) {
       renderView(`
           <div style="display: flex; flex-direction: row;">
             <div style="display: flex; flex-direction: column; width:25%; margin:20px 5px;">
               <form action="" class="form-main" style="width: 100%; margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
+                
                 <div class="div-main" style="height: 40px;">
-                    <h1 style="text-align: center; ">Вопрос #1</h1>
+                    <h1 style="text-align: center; ">${questionData}</h1>
                 </div>
+
                 <div class="div-main" style="height:150px; justify-content: flex-start;">
-                    <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">##############################################.#################?</h1>
+                    <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">${questionData.question}</h1>
                 </div>
               </form>
 
-              <form action="" class="form-main" style="width: 100%;">
+              <form action="" class="form-main" style="width: 100%; margin-top: 20px; border-radius: 10px;min-height: 200px;">
                 <div class="div-main question">
-                    <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
-                        <span>Ответ #1</span>
-                    </Button>
-                    <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
-                        <span>Ответ #2</span>
-                    </Button>
-                    <Button id="btn" role="button" class="button-main answer" style="width: 100%;">
-                        <span>Ответ #3</span>
-                    </Button>
-                    <Button id="btn1" role="button" type="button" class="button-main answer" style="width: 100%;">
-                        <span>Ответ #4</span>
-                    </Button>
+                  ${questionData.answers.map((answer, index) => `
+                    <button id="btn-${index}" role="button" style="width: 100%; class="button-main answer" disabled>
+                      <span>${answer}</span>
+                    </button>
+                  `).join('')}
                 </div>
               </form>
             </div>
@@ -181,35 +180,54 @@
       updateLobbyGame();
     }
 
-    function renderPlayerInterface() {
+    function renderPlayerInterface(questionData) {
       renderView(`
 
-        <form action="" class="form-main" style="margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
+        <form class="form-main" style="margin-top: 20px; background-color: #102952; border-radius: 10px;min-height: 200px;">
             <div class="div-main" style="height: 40px;">
-                <h1 style="text-align: center; ">Вопрос #1</h1>
+                <h1 style="text-align: center; ">${questionData}</h1>
             </div>
+
             <div class="div-main" style="height:150px; justify-content: flex-start;">
-                <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">##############################################.#################?</h1>
+                <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">${questionData.question}</h1>
             </div>
+
+            
         </form>
 
-        <form action="" class="form-main">
-            <div class="div-main question">
-                <Button id="btn" role="button" class="button-main answer">
-                    <span>Ответ #1</span>
-                </Button>
-                <Button id="btn" role="button" class="button-main answer">
-                    <span>Ответ #2</span>
-                </Button>
-                <Button id="btn" role="button" class="button-main answer">
-                    <span>Ответ #3</span>
-                </Button>
-                <Button id="btn" role="button" class="button-main answer">
-                    <span>Ответ #4</span>
-                </Button>
-            </div>
+        <form action="" class="form-main" style="width: 100%; margin-top: 20px; border-radius: 10px;min-height: 200px;">
+          <div class="div-main question">
+              ${questionData.answers.map((answer, index) => `
+                <button id="btn-${index}" role="button" class="button-main answer" onclick="sendAnswer(${index})">
+                  <span>${answer}</span>
+                </button>
+              `).join('')}
+          </div>
         </form>
       `);
+    }
+
+    function sendAnswer(answerIndex){
+      socket.emit('answer', (state.roomId, state.nickname, answerIndex));
+    }
+
+    function addUserToLobby(user){
+      const userList = document.getElementById('connected-users');
+      const imageUrl = `../Images/Player/${user.image}`;
+      const userDiv = document.createElement('div');
+      userDiv.classList.add('player');
+      userDiv.style.display = 'flex';
+      userDiv.style.flexDirection = 'row';
+      userDiv.style.flexWrap = 'nowrap';
+      userDiv.style.width = '80%';
+      userDiv.style.margin = '5px auto';
+      userDiv.style.alignItems='center';
+      
+      userDiv.innerHTML = `<img src="${imageUrl}" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 70px; height: 90px; object-fit: cover;">
+              <div style="margin: 0 15px;">
+                <span>${user.nickname} ${user.ready ? '(Готов)' : ''}</span>
+              </div>`;
+      userList.appendChild(userDiv);
     }
 
     function updateLobbyUsers() {
@@ -217,16 +235,7 @@
       if (userList) {
         userList.innerHTML = '';
         state.users.forEach(user => {
-          const imageUrl = `../Images/Player/${user.image}`;
-          userList.innerHTML += `
-            <div class ="player" style="display: flex; flex-direction: row; flex-wrap: nowrap; width: 80%; margin: 5 auto; align-items: center;">
-              <img src="${imageUrl}" alt="" style="border: 1px solid transparent; border-radius: 15px; width: 70px; height: 90px; object-fit: cover;">
-              <div style="margin: 0 15px;">
-                <span>${user.nickname} ${user.ready ? '(Готов)' : ''}</span>
-              </div>
-            </div>
-          `;
-          
+          addUserToLobby(user);
         });
       }
     }
@@ -263,8 +272,15 @@
     });
 
     socket.on('user-joined', (users) => {
-      state.users = users;
-      updateLobbyUsers();
+      const newUser = users.find(user => !state.users.some(u => u.id === user.id));
+      if (newUser) {
+        state.users.push(newUser);
+        addUserToLobby(newUser);
+      }
+      else {
+        state.users = users;
+        updateLobbyUsers();
+      }
     });
 
     socket.on('user-left', (users) => {
