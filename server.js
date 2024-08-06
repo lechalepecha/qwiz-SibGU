@@ -1,5 +1,4 @@
 const express = require('express');
-const { futimesSync } = require('fs');
 const http = require('http');
 const path = require('path');
 const socketIo = require('socket.io');
@@ -9,8 +8,8 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const rooms = {};
 const questions = [
-  {question: 'Вопрос 1', answers: ['vfibyf', 'cavjktn', 'hfrtnf', 'nfyr'], correct: 0},
-  {question: 'Вопрос 2', answers: ['felb', 'naqjnf', 'vthctltc', ',vd'], correct: 2}
+  { question: 'Вопрос 1', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
+  { question: 'Вопрос 2', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Ответ D'], correct: 2 }
 ];
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -51,17 +50,9 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('user-joined', room.players);
         console.log(`Player ${nickname} is ready in room ${roomId}`);
         if (room.players.every(p => p.ready)) {
-          //io.to(roomId).emit('start-game');
           StartNextQuestion(roomId);
         }
       }
-    }
-  });
-
-  socket.on('start-game', (roomId) => {
-    const room = rooms[roomId];
-    if (room && socket.id === room.creator) {
-      io.to(roomId).emit('start-game');
     }
   });
 
@@ -85,51 +76,51 @@ io.on('connection', (socket) => {
 
   socket.on('answer', (roomId, nickname, answerIndex) => {
     const room = rooms[roomId];
-    if(room){
+    if (room) {
       const player = room.players.find(p => p.nickname === nickname);
-      if (player) {
-      if(questions[room.currentQuestion--].correct === answerIndex) {
-        console.log('Correct answer'); 
-         
-        player.score+=50;
-        console.log('your score is '+ player.score);
-          
-      }
-      else{
-        console.log('Incrorect answer, your answer is '+ answerIndex);
-        console.log('correct answer is ' + questions[room.currentQuestion].correct)
-        console.log('your score is '+ player.score);
-      }
-      room.answers[nickname] = answerIndex;
-      if (Object.keys(room.answers).length === room.players.length) {
-        startNextQuestion(roomId);
+      if (player && !(nickname in room.answers)) {
+        const currentQuestionIndex = room.currentQuestion-1;
+        const currentQuestion = questions[currentQuestionIndex];
+        if (currentQuestion.correct === answerIndex) {
+          player.score += 50;
+          console.log("Ответ верный, ваш ответ " + answerIndex);
+          console.log("Верный ответ " + currentQuestion.correct);
+        } else {
+          console.log("Ответ не верный, ваш ответ " + answerIndex);
+          console.log("Верный ответ " + currentQuestion.correct);
+        }
+        room.answers[nickname] = answerIndex;
+  
+        if (Object.keys(room.answers).length === room.players.length) {
+          setTimeout(() => {
+            StartNextQuestion(roomId);
+          }, 3000);
+        }
       }
     }
-  }})
+  });
 });
 
-  function StartNextQuestion(roomid){
-    const room = rooms[roomid];
-    if(room){
-      const questionIndex = room.currentQuestion;
-      if(questionIndex < questions.length){
-        io.to(roomid).emit('next-question', questions[questionIndex]);
-        room.currentQuestion++;
-        room.answers = {};
-        setTimeout(() => {
-          
-            StartNextQuestion(roomid);
-          
-          
-        }, 30000);
-      }
-      else{
-        io.to(roomid).emit('quiz-ended');
-      }
+function StartNextQuestion(roomId) {
+  const room = rooms[roomId];
+  if (room) {
+    if (room.currentQuestion < questions.length) {
+      io.to(roomId).emit('next-question', questions[room.currentQuestion]);
+      room.currentQuestion++;
+      room.answers = {};
+
+      /*setTimeout(() => {
+        updatePlayerPositions();
+      }, 1000);
+*/
+      setTimeout(() => {
+        StartNextQuestion(roomId);
+      }, 40000);
+    } else {
+      io.to(roomId).emit('quiz-ended');
     }
   }
-  
-  
+}
 
 server.listen(3000, () => {
   console.log('Server running at http://localhost:3000');

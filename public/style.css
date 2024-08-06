@@ -569,6 +569,10 @@ body{
   border-radius:10px;
 }
 
+.active{
+  background-color: #2054a8;
+}
+
 .input-main{
   margin:5px 0; 
   color: #939596; 
@@ -599,13 +603,13 @@ body{
 }
 
 .player{
-  transform: translateY(50%);
+  transform: translateY(20%);
   opacity: 0;
   animation: PL-fade-in 1s forwards;
 }
 
 @keyframes PL-fade-in{
-  0% {opacity: 0; transform: translateY(50%);}
+  0% {opacity: 0; transform: translateY(20%);}
   100% {opacity: 1; transform: translateY(0);}
 
 }
@@ -639,9 +643,7 @@ canvas {
   overflow: hidden;
 }
 
-/*button:disabled,
+button:disabled,
 button[disabled]{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}*/
+  background-color: #2054a8;
+}
