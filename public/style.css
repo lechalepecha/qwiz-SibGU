@@ -623,6 +623,10 @@ body{
 .answer{
   margin: 5px 0; 
   width: 48%;
+  padding: 10px 35px;
+  background-color: #102952;
+  text-transform: uppercase;
+  border-radius:10px;
 }
 /* ---- particles.js container ---- */
 
@@ -643,7 +647,9 @@ canvas {
   overflow: hidden;
 }
 
-button:disabled,
-button[disabled]{
+.active{
+  padding: 10px 35px;
+  text-transform: uppercase;
+  border-radius:10px;
   background-color: #2054a8;
 }

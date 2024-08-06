@@ -123,6 +123,7 @@
       readyButton.addEventListener('click', () => {
         socket.emit('player-ready', state.roomId, state.nickname);
         readyButton.disabled = true;
+        readyButton.classList = 'active';
       });
 
       updateLobbyUsers();
@@ -162,7 +163,7 @@
               <form action="" class="form-main" style="width: 100%; margin-top: 20px; border-radius: 10px;min-height: 200px;">
                 <div class="div-main question">
                   ${questionData.answers.map((answer, index) => `
-                    <button id="btn-${index}" role="button" style="width: 100%; class="button-main answer" disabled>
+                    <button id="btn-${index}" role="button" style="width: 100%;" class="answer" disabled>
                       <span>${answer}</span>
                     </button>
                   `).join('')}
@@ -207,9 +208,12 @@
         e.preventDefault();
         sendAnswer(index);
         document.querySelectorAll('.button-main.answer').forEach((btn) => {
-        btn.disabled = true;
-      });
-      });
+          btn.disabled = true;
+          if(btn.id === "btn-"+index){
+            btn.classList += ' active';
+          }
+        });
+    });
     });
   }
 
