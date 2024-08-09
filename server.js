@@ -10,7 +10,7 @@ const rooms = {};
 const questions = [
   { question: 'Вопрос 1', answers: ['Правильный', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
   { question: 'Вопрос 2', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
-  {question: 'Вопрос 3', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
+  /*{question: 'Вопрос 3', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
   { question: 'Вопрос 4', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
   { question: 'Вопрос 5', answers: ['Ответ 1', 'Ответ 2', 'Правильный', 'Ответ 4'], correct: 2 },
   { question: 'Вопрос 6', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
@@ -19,7 +19,7 @@ const questions = [
   { question: 'Вопрос 9', answers: ['Правильный', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
   { question: 'Вопрос 10', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
   {question: 'Вопрос 11', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
-  { question: 'Вопрос 12', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
+  { question: 'Вопрос 12', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 }*/
 ];
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
   socket.on('join-room', (roomId, nickname) => {
     if (rooms[roomId]) {
       const imageIndex = rooms[roomId].players.length % 5;
-      const user = { id: socket.id, nickname, ready: false, image: `file${imageIndex + 1}.png`, score: 0 };
+      const user = { id: socket.id, nickname, ready: false, image: `file${imageIndex + 1}.png`, ship: `ship${imageIndex + 1}`, score: 0 };
       rooms[roomId].players.push(user);
       user.score = 0;
       socket.join(roomId);
@@ -128,7 +128,12 @@ io.on('connection', (socket) => {
 function StartNextQuestion(roomId) {
   const room = rooms[roomId];
   if (room) {
-    if (room.currentQuestion < questions.length) {
+
+    setTimeout(() => {
+      io.to(roomId).emit('move-player', rooms[roomId].players);
+    }, 1000);
+
+    if (room.currentQuestion != questions.length) {
       room.timerStart = Date.now();
 
       io.to(roomId).emit('next-question', questions[room.currentQuestion]);
@@ -139,17 +144,13 @@ function StartNextQuestion(roomId) {
         clearTimeout(room.timer);
       }
 
-      setTimeout(() => {
-        io.to(roomId).emit('move-player', rooms[roomId].players);
-      }, 1000);
-
       room.timer = setTimeout(() => {
         room.isQuestionActive = false;
         StartNextQuestion(roomId);
       }, 60000);
 
     } else {
-      io.to(roomId).emit('quiz-ended');
+      io.to(roomId).emit('quiz-ended', roomId);
     }
   }
 }

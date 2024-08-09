@@ -597,9 +597,25 @@ body{
   animation: fade-in 1s forwards;
 }
 
+.fade-in{
+  opacity: 0;
+  width:100%;
+  height:100%;
+  position:absolute;
+  background-color:white; 
+  z-index:99999;
+  opacity: 0;
+  animation: fade-in 0.1s forwards;
+}
+
 @keyframes fade-in{
   0% {opacity: 0;}
   100% {opacity: 1;}
+}
+
+@keyframes fade-out{
+  0% {opacity: 1;}
+  100% {opacity: 0;}
 }
 
 .player{
@@ -652,4 +668,55 @@ canvas {
   text-transform: uppercase;
   border-radius:10px;
   background-color: #2054a8;
+}
+
+.fade-out{
+  opacity: 1;
+  animation: fade-out 1s forwards;
+}
+
+.changeBGColor{
+  opacity: 1;
+  width:100%;
+  height:100%;
+  position:absolute;
+  z-index:99999;
+  color: #021530;
+  animation: changeColor 0.2s forwards;
+}
+
+@keyframes changeColor{
+  0% {background-color: #fff;}
+  100% {background-color: #021530;}
+}
+
+.x {
+  background: #fff;
+  height: 1px;
+}
+.winner {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-animation: neon 1s ease-in-out infinite alternate;
+          animation: neon 1s ease-in-out infinite alternate;
+  opacity: 0.8;
+}
+@-webkit-keyframes neon {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #228dff, 0 0 70px #228dff, 0 0 80px #228dff, 0 0 100px #228dff, 0 0 150px #228dff;
+  }
+  to {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #228dff, 0 0 35px #228dff, 0 0 40px #228dff, 0 0 50px #228dff, 0 0 75px #228dff;
+  }
+}
+@keyframes neon {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #228dff, 0 0 70px #228dff, 0 0 80px #228dff, 0 0 100px #228dff, 0 0 150px #228dff;
+  }
+  to {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #228dff, 0 0 35px #228dff, 0 0 40px #228dff, 0 0 50px #228dff, 0 0 75px #228dff;
+  }
 }
