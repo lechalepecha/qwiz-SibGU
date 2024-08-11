@@ -790,9 +790,13 @@ canvas {
 
 @keyframes moveY {
   0% { transform: translateY(15px) translateX(-25px);}
+  12% { transform: translateY(-15px) translateX(-25px);}
   25% { transform: translateY(-15px) translateX(50px);}
+  37% { transform: translateY(15px) translateX(50px);}
   50% { transform: translateY(15px) translateX(-25px);}
+  62% { transform: translateY(-15px) translateX(-25px);}
   75% { transform: translateY(-15px) translateX(50px);}
+  87% { transform: translateY(15px) translateX(50px);}
   100% { transform: translateY(15px) translateX(-25px);}
 }
 
