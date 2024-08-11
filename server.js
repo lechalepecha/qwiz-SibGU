@@ -37,8 +37,8 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', (roomId, nickname) => {
     if (rooms[roomId]) {
-      const imageIndex = rooms[roomId].players.length % 5;
-      const user = { id: socket.id, nickname, ready: false, image: `file${imageIndex + 1}.png`, ship: `ship${imageIndex + 1}`, score: 0 };
+      const imageIndex = Math.floor(Math.random()* (16-1)+1);
+      const user = { id: socket.id, nickname, ready: false, image: `file${imageIndex}.png`, ship: `ship${imageIndex}.png`, score: 0 };
       rooms[roomId].players.push(user);
       user.score = 0;
       socket.join(roomId);
@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('user-joined', room.players);
         console.log(`Player ${nickname} is ready in room ${roomId}`);
         if (room.players.every(p => p.ready)) {
-          StartNextQuestion(roomId);
+          io.to(roomId).emit('show-start-button', roomId);
         }
       }
     }
@@ -123,7 +123,14 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('start-game', (roomId) => {
+    setTimeout(() => {
+      StartNextQuestion(roomId);
+    }, 3000);
+  })
+
 });
+
 
 function StartNextQuestion(roomId) {
   const room = rooms[roomId];
