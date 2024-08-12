@@ -801,7 +801,7 @@ canvas {
 }
 
 .moving-object {
-  animation: moveY 4s ease-out infinite;
+   animation: moveY 4s cubic-bezier(0.1, 0.5, 0.3, 1.2) infinite;
 }
 
 @keyframes grow{
