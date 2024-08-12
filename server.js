@@ -10,7 +10,7 @@ const rooms = {};
 const questions = [
   { question: 'Вопрос 1', answers: ['Правильный', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
   { question: 'Вопрос 2', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
-  /*{question: 'Вопрос 3', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
+  {question: 'Вопрос 3', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
   { question: 'Вопрос 4', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
   { question: 'Вопрос 5', answers: ['Ответ 1', 'Ответ 2', 'Правильный', 'Ответ 4'], correct: 2 },
   { question: 'Вопрос 6', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
@@ -19,7 +19,7 @@ const questions = [
   { question: 'Вопрос 9', answers: ['Правильный', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
   { question: 'Вопрос 10', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
   {question: 'Вопрос 11', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
-  { question: 'Вопрос 12', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 }*/
+  { question: 'Вопрос 12', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 }
 ];
 
 app.use(express.static(path.join(__dirname, 'public')));
