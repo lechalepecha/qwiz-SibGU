@@ -184,9 +184,6 @@ function renderCreatorInterface() {
         <div id="connected-users" class="players-game">
         </div>
 
-
-        <div style="top:0; width: 5%; height:100%; position:sticky;">
-        </div>
       </div>
 
       <div id="winnerOverlay">
@@ -367,7 +364,7 @@ socket.on('user-left', (users) => {
 });
 
 socket.on('quiz-ended', (roomId)=> {
-  setTimeout(() =>{
+
       if(state.isCreator){
       const gameOverlay = document.getElementById('gameOverlay');
       const winner = state.users.reduce((prev, curr) => (prev.score > curr.score) ? prev : curr);
@@ -375,32 +372,32 @@ socket.on('quiz-ended', (roomId)=> {
       const app = document.getElementById('app');
       app.innerHTML+=`<svg id="overlay" class="svgOver" width="100%" height="100%">
       </svg>`
-  
+        
       const targetElement = document.getElementById('player-'+winner.id);
       targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  
-      setTimeout(() => {
-        const rect = targetElement.getBoundingClientRect();
-  
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-  
-      const svg = document.getElementById('overlay');
 
-      svg.innerHTML = '';
+    setTimeout(() => {
+      const rect = targetElement.getBoundingClientRect();
 
-      const ellipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
-      ellipse.setAttribute('cx', centerX);
-      ellipse.setAttribute('cy', centerY);
-      ellipse.setAttribute('rx', 0);
-      ellipse.setAttribute('ry', 0);
-      ellipse.setAttribute('fill', 'rgba(255, 255, 255, 1)');
-      ellipse.setAttribute('class', 'animate-ellipse'); 
-      svg.appendChild(ellipse);
-      },2000);
-        
-     
-  
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const svg = document.getElementById('overlay');
+
+    svg.innerHTML = '';
+
+    const ellipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+    ellipse.setAttribute('cx', centerX);
+    ellipse.setAttribute('cy', centerY);
+    ellipse.setAttribute('rx', 0);
+    ellipse.setAttribute('ry', 0);
+    ellipse.setAttribute('fill', 'rgba(255, 255, 255, 1)');
+    ellipse.setAttribute('class', 'animate-ellipse'); 
+    svg.appendChild(ellipse);
+    },2000);
+
+
+
       setTimeout(() => {
         gameOverlay.innerHTML='';
         winnerOverlay.setAttribute("class", "changeBGColor");
@@ -593,8 +590,6 @@ socket.on('quiz-ended', (roomId)=> {
         window.location.reload();
       }, 60000);
     }
-  }
-  , 3500);
   
 })
 

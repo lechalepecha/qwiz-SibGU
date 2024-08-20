@@ -587,7 +587,7 @@ body{
 }
 
 .players-game{
-  width: 70%; 
+  width: 75%; 
   display: flex; 
   flex-direction: column; 
   overflow: auto;
@@ -807,7 +807,7 @@ canvas {
 @keyframes grow{
   0% {rx:0; ry:0;}
   50%{rx:5%; ry:7%;}
-  100% {rx:100%; ry:130%;}
+  100% {rx:100%; ry:150%;}
 }
 
 @keyframes rotate{
