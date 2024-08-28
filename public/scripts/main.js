@@ -153,22 +153,22 @@ socket.on('show-start-button', (roomId) => {
   }
 })
 
-socket.on('next-question', (questionData) => {
-  renderGameInterface(questionData);
+socket.on('next-question', (questionData, answerIndex) => {
+  renderGameInterface(questionData, answerIndex);
 });
 
-function renderGameInterface(questionData) {
+function renderGameInterface(questionData, answerIndex) {
   if(gameStarted == false && state.isCreator){
     renderCreatorInterface();
-    updateCreatorQuestions(questionData);
+    updateCreatorQuestions(questionData, answerIndex);
     updateLobbyGame();
     gameStarted = true;
   }
   else{
     if (state.isCreator) {
-      updateCreatorQuestions(questionData);
+      updateCreatorQuestions(questionData, answerIndex);
     } else {
-      renderPlayerInterface(questionData);
+      renderPlayerInterface(questionData, answerIndex);
     }
   }
 }
@@ -192,14 +192,14 @@ function renderCreatorInterface() {
   `);
 }
 
-function updateCreatorQuestions(questionData){
+function updateCreatorQuestions(questionData, answerIndex){
   const questiondiv = document.getElementById('question');
   if(questiondiv){
     questiondiv.innerHTML ='';
     questiondiv.innerHTML = `
     <form action="" class="form-main question" style="width: 100%;">        
       <div class="div-main" style="height: 40px;">
-          <h1 style="text-align: center; ">${questionData.question}</h1>
+          <h1 style="text-align: center; ">Вопрос ${answerIndex+1}</h1>
       </div>
 
       <div class="div-main" style="height:150px; justify-content: flex-start;">
@@ -219,11 +219,11 @@ function updateCreatorQuestions(questionData){
   }
 }
 
-function renderPlayerInterface(questionData) {
+function renderPlayerInterface(questionData, answerIndex) {
 renderView(`
   <form class="form-main question">
       <div class="div-main" style="height: 40px;">
-          <h1 style="text-align: center;">${questionData.question}</h1>
+          <h1 style="text-align: center;">${answerIndex+1}</h1>
       </div>
       <div class="div-main" style="height:150px; justify-content: flex-start;">
           <h1 id="Question" class="input-main" style="text-wrap:wrap; word-wrap: break-word;">${questionData.question}</h1>

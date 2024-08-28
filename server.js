@@ -7,20 +7,70 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 const rooms = {};
+let shuffledQuestions = [];
+let selectedQuestions = [];
 const questions = [
-  { question: 'Вопрос 1', answers: ['Правильный', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
-  { question: 'Вопрос 2', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
-  {question: 'Вопрос 3', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
-  { question: 'Вопрос 4', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
-  { question: 'Вопрос 5', answers: ['Ответ 1', 'Ответ 2', 'Правильный', 'Ответ 4'], correct: 2 },
-  { question: 'Вопрос 6', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 },
-  {question: 'Вопрос 7', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3', 'Правильный'], correct: 3 },
-  { question: 'Вопрос 8', answers: ['Ответ A', 'Правильный', 'Ответ C', 'Ответ D'], correct: 1 },
-  { question: 'Вопрос 9', answers: ['Правильный', 'Ответ 2', 'Ответ 3', 'Ответ 4'], correct: 0 },
-  { question: 'Вопрос 10', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
-  {question: 'Вопрос 11', answers: ['Ответ 1', 'Правильный', 'Ответ 3', 'Ответ 4'], correct: 1 },
-  { question: 'Вопрос 12', answers: ['Ответ A', 'Ответ B', 'Ответ C', 'Правильный'], correct: 3 }
+  { question: 'Во сколько лет Решетнев Михаил Федорович окончил школу?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 0 },
+  { question: 'По какой причине приёмные комиссии авиационных вузов страны отказывали в поступлении Решетневу?', answers: ['Ответ A', 'Ответ B', 'Правильный', 'Ответ D'], correct: 2 },
+  { question: 'В какой институт поступил Михаил Федорович?', answers: ['Ответ 1', 'Правильный', 'Ответ 3'], correct: 1 },
+  { question: 'Что названо именем Решетнева Михаила Федоровича?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 2 },
+  { question: 'Первое место работы Решетнева?', answers: ['Ответ 1', 'Ответ 2', 'Правильный'], correct: 0 },
+  { question: 'Какое название, в настоящее время, носит город, в котором находился филиал ОКБ, где Михаил Федорович был главным конструктором?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 2 },
+  { question: 'В какой город эвакуировали МАИ, где учился Михаил Федорович, в начале Великой отечественной войны?', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'Учеником и соподвижником какого ученого был Решетнев?', answers: ['Ответ A', 'Правильный', 'Ответ C'], correct: 0 },
+  { question: 'Макет какой ракеты, сконструированной Михаилом Федоровичем, стоит сегодня на площади Котельникова города Красноярска?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'Спутники какой системы являются «детищем» предприятия Решетнева?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 2 },
+  { question: 'Какого роста должен был быть человек в СССР, чтобы попасть в отряд космонавтов?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 2 },
+  { question: 'К какому типу звезд относится Солнце?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 1 },
+  { question: 'Какой русский ученый является основоположником космонавтики?', answers: ['Ответ 1', 'Правильный', 'Ответ 3'], correct: 1 },
+  { question: 'На какой из планет Солнечной системы находится самая высокая гора?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 2 },
+  { question: 'Какая звезда является самой близкой к Земле?', answers: ['Ответ 1', 'Ответ 2', 'Правильный'], correct: 0 },
+  { question: 'Сколько планет в Солнечной системе?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 1 },
+  { question: 'Сколько часов длятся сутки на Юпитере?', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'Сколько собак летало в космос в первый раз?', answers: ['Ответ A', 'Правильный', 'Ответ C'], correct: 0 },
+  { question: 'Какие две планеты Солнечной системы не имеют естественных спутников?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'В чем измеряется расстояние между звездами?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 0 },
+  { question: 'Звезды какого цвета не существует?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'Сколько спутников у Сатурна?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 2 },
+  { question: 'Как назывался космический корабль, на котором был совершен первый полёт в космос?', answers: ['Ответ 1', 'Правильный', 'Ответ 3'], correct: 0 },
+  { question: 'На какой планете Солнечной системы наблюдается самый крупный циклон?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 2 },
+  { question: 'Что в переводе с греческого означает «комета»?', answers: ['Ответ 1', 'Ответ 2', 'Правильный'], correct: 1 },
+  { question: 'Что такое Супернова (Supernova)?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 0 },
+  { question: 'Из чего состоит атмосфера Венеры?', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3'], correct: 2 },
+  { question: 'Какой космонавт первым совершил выход в открытый космос?', answers: ['Ответ A', 'Правильный', 'Ответ C'], correct: 1 },
+  { question: 'Какая планета Солнечной системы имеет спутник с самой плотной атмосферой?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 0 },
+  { question: 'К какому созвездию принадлежит полярная звезда?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 1 },
+  { question: 'Что такое «Солнечный ветер»?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 0 },
+  { question: 'Какой планетой является Юпитер?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 0 },
+  { question: 'В каком году был запущен первый искусственный спутник Земли?', answers: ['Ответ 1', 'Правильный', 'Ответ 3'], correct: 1 },
+  { question: 'Какая планета Солнечной системы весит больше прочих планет и лун вместе взятых ?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 1 },
+  { question: 'Что несут с собой радиоволны, исходящие от звёзд?', answers: ['Ответ 1', 'Ответ 2', 'Правильный'], correct: 0 },
+  { question: 'Какая страна первой запустила в космос искусственный спутник Земли?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 0 },
+  { question: 'В каком году был совершён первый в истории орбитальный полёт в космос живых существ с успешным возвращением на Землю?', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'Кто был первой женщиной-космонавтом?', answers: ['Ответ A', 'Правильный', 'Ответ C'], correct: 1 },
+  { question: 'Какая звезда является ярчайшей (после Солнца) звездой из визуально наблюдаемых с Земли?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 0 },
+  { question: 'Как появилась Луна?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 2 },
+  { question: 'Как называется установка, которая применяется для тренировки и космонавтов, и подводников, а также в медицине при лечении некоторых заболеваний?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 1 },
+  { question: 'Что является причиной образования кратеров на Луне?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 2 },
+  { question: 'Как называется прибор для наблюдения небесных тел?', answers: ['Ответ 1', 'Правильный', 'Ответ 3'], correct: 1 },
+  { question: 'Полет Юрия Гагарина длился...', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 2 },
+  { question: 'Когда был совершен первый полет человека в космос?', answers: ['Ответ 1', 'Ответ 2', 'Правильный'], correct: 0 },
+  { question: 'Что означает слово «космос»?', answers: ['Ответ A', 'Ответ B', 'Ответ C'], correct: 2 },
+  { question: 'Из чего состоит комета?', answers: ['Ответ 1', 'Ответ 2', 'Ответ 3'], correct: 0 },
+  { question: 'Наука, изучающая небесные тела', answers: ['Ответ A', 'Правильный', 'Ответ C'], correct: 1 },
+  { question: 'Как назывался космический корабль, на котором стартовал Ю. А. Гагарин?', answers: ['Правильный', 'Ответ 2', 'Ответ 3'], correct: 0 },
+  { question: 'Какой ученый является изобретателем космической ракеты?', answers: ['Ответ A', 'Ответ B', 'Правильный'], correct: 0 }
 ];
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -30,6 +80,10 @@ io.on('connection', (socket) => {
   socket.on('create-room', () => {
     const roomId = Math.random().toString(36).substr(2, 5);
     rooms[roomId] = { players: [], creator: socket.id, currentQuestion: 0, answers: {} };
+ 
+    shuffledQuestions = shuffle(questions);
+    selectedQuestions = shuffledQuestions.slice(0, 10);
+    console.log(selectedQuestions);
     socket.join(roomId);
     socket.emit('room-created', roomId);
     console.log(`Room ${roomId} created`);
@@ -91,7 +145,7 @@ io.on('connection', (socket) => {
       if (player && !(nickname in room.answers)) {
 
         const currentQuestionIndex = room.currentQuestion-1;
-        const currentQuestion = questions[currentQuestionIndex];
+        const currentQuestion = selectedQuestions[currentQuestionIndex];
 
         const elapsedTime = Date.now() - room.timerStart;
         const remainingTime = 60000 - elapsedTime;
@@ -127,12 +181,13 @@ io.on('connection', (socket) => {
     setTimeout(() => {
       StartNextQuestion(roomId);
     }, 3000);
+    console.log(selectedQuestions);
   })
 
 });
 
 
-function StartNextQuestion(roomId) {
+function StartNextQuestion(roomId, answerIndex) {
   const room = rooms[roomId];
   if (room) {
 
@@ -140,10 +195,10 @@ function StartNextQuestion(roomId) {
       io.to(roomId).emit('move-player', rooms[roomId].players);
     }, 1000);
 
-    if (room.currentQuestion != questions.length) {
+    if (room.currentQuestion != selectedQuestions.length) {
       room.timerStart = Date.now();
 
-      io.to(roomId).emit('next-question', questions[room.currentQuestion]);
+      io.to(roomId).emit('next-question', selectedQuestions[room.currentQuestion], answerIndex);
       room.currentQuestion++;
       room.answers = {};
 
