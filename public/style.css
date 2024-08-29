@@ -788,6 +788,13 @@ canvas {
   animation: rotate 3s linear infinite;
 }
 
+@keyframes fly{
+  0%,100%{transform: translateX(-25px) scale(1);}
+  25%{transform: scale(0.8)}
+  50%{transform: translateX(45px) scale(1);}
+  75%{transform:scale(1.1)}
+}
+
 @keyframes moveY {
   0% { transform: translateY(15px) translateX(-25px);}
   12% { transform: translateY(-15px) translateX(-25px);}
@@ -801,7 +808,7 @@ canvas {
 }
 
 .moving-object {
-   animation: moveY 4s cubic-bezier(0.1, 0.5, 0.3, 1.2) infinite;
+  animation: fly 6s cubic-bezier(1, 0.3, 0.3, 1) infinite;
 }
 
 @keyframes grow{

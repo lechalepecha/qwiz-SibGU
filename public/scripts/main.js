@@ -554,11 +554,11 @@ socket.on('quiz-ended', (roomId)=> {
   `;
   const imageUrl = `../Images/other/${winner.ship}`;
       winnerOverlay.innerHTML+=` <div id="player-${winner.id}" class="winner" >
-            <div style="margin: 0 15px; color: white; text-align:center;">
+            <div style="margin:15px; color: white; text-align:center;">
               <span style="text-align:center; font-weight:600; font-size:30px;">${winner.nickname}</span>
             </div>
             <img class="moving-object" src="${imageUrl}" alt="" style=" width: 200px; object-fit: cover;">
-            <div style="margin: 0 15px; color: white; text-align:center;">
+            <div style="margin:15px; color: white; text-align:center;">
               <h1 style="text-align:center; font-weight:600; font-size:35px;">ПОБЕДИТЕЛЬ</h1>
             </div>
               <button id="exit-button" class="button-main" style="display:none; opacity:1; margin:10px 0;" type="button">
