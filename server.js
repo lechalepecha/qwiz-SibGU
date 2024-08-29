@@ -187,7 +187,7 @@ io.on('connection', (socket) => {
 });
 
 
-function StartNextQuestion(roomId, answerIndex) {
+function StartNextQuestion(roomId) {
   const room = rooms[roomId];
   if (room) {
 
@@ -198,7 +198,7 @@ function StartNextQuestion(roomId, answerIndex) {
     if (room.currentQuestion != selectedQuestions.length) {
       room.timerStart = Date.now();
 
-      io.to(roomId).emit('next-question', selectedQuestions[room.currentQuestion], answerIndex);
+      io.to(roomId).emit('next-question', selectedQuestions[room.currentQuestion], room.currentQuestion);
       room.currentQuestion++;
       room.answers = {};
 
