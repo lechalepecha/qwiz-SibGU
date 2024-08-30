@@ -179,7 +179,7 @@ function renderCreatorInterface() {
       <div style="display: flex; flex-direction: row; max-height:100vh; overflow:auto;" id="gameOverlay" >
         <div id="question" class="div-q">
         <div class="container">
-            <div class="blackhole">
+            <div class="blackhole" id="blackhole">
               <div class="megna">
                 <div class="black"></div>
               </div>
@@ -213,7 +213,7 @@ function updateCreatorQuestions(questionData, currentQuestion){
       </div>
     </form>
     <div class=" div-q container">
-            <div class="blackhole">
+            <div class="blackhole" id="blackhole">
               <div class="megna">
                 <div class="black"></div>
               </div>
@@ -377,8 +377,7 @@ socket.on('quiz-ended', (roomId)=> {
       app.innerHTML+=`<svg id="overlay" class="svgOver" width="100%" height="100%">
       </svg>`
         
-      const targetElement = document.getElementById('player-'+winner.id);
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const targetElement = document.getElementById('blackhole');
 
     setTimeout(() => {
       const rect = targetElement.getBoundingClientRect();
@@ -395,7 +394,7 @@ socket.on('quiz-ended', (roomId)=> {
     ellipse.setAttribute('cy', centerY);
     ellipse.setAttribute('rx', 0);
     ellipse.setAttribute('ry', 0);
-    ellipse.setAttribute('fill', 'rgba(255, 255, 255, 1)');
+    ellipse.setAttribute('fill', 'rgba(0, 0, 0, 1)');
     ellipse.setAttribute('class', 'animate-ellipse'); 
     svg.appendChild(ellipse);
     },2000);
