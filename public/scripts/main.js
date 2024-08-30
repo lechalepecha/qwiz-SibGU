@@ -176,11 +176,17 @@ function renderGameInterface(questionData, currentQuestion) {
 
 function renderCreatorInterface() {
   renderView(`
-      <div style="display: flex; flex-direction: row; max-height:95vh; overflow:auto;" id="gameOverlay" >
+      <div style="display: flex; flex-direction: row; max-height:100vh; overflow:auto;" id="gameOverlay" >
         <div id="question" class="div-q">
-          
+        <div class="container">
+            <div class="blackhole">
+              <div class="megna">
+                <div class="black"></div>
+              </div>
+            </div>
         </div>
-
+        </div>
+        
         <div id="connected-users" class="players-game">
         </div>
 
@@ -206,16 +212,14 @@ function updateCreatorQuestions(questionData, currentQuestion){
           <h1 class="input-main" style="text-wrap:wrap; word-wrap: break-word;">${questionData.question}</h1>
       </div>
     </form>
-
-    <form action="" class="form-main" style="width: 100%; margin-top: 20px;  border-radius: 10px; min-height: 200px; overflow: visible;">
-      <div class="div-main" style="width:100%;">
-        ${questionData.answers.map((answer, index) => `
-          <button id="btn-${index}" role="button" class="button-main answer" style="width:100%" disabled>
-            <span>${answer}</span>
-          </button>
-        `).join('')}
-      </div>
-    </form>`;
+    <div class=" div-q container">
+            <div class="blackhole">
+              <div class="megna">
+                <div class="black"></div>
+              </div>
+            </div>
+        </div>
+    `;
   }
 }
 
