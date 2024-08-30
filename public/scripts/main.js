@@ -389,6 +389,61 @@ socket.on('quiz-ended', (roomId)=> {
 
     svg.innerHTML = '';
 
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+svg.appendChild(defs);
+
+const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+grad.setAttribute('id', 'grad');
+grad.setAttribute('x1', '0%');
+grad.setAttribute('y1', '0%');
+grad.setAttribute('x2', '100%');
+grad.setAttribute('y2', '0%');
+
+const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+stop1.setAttribute('offset', '0%');
+stop1.setAttribute('stop-color', '#ff4500');
+grad.appendChild(stop1);
+
+const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+stop2.setAttribute('offset', '50%');
+stop2.setAttribute('stop-color', '#ff4500');
+grad.appendChild(stop2);
+
+const stop3 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+stop3.setAttribute('offset', '100%');
+stop3.setAttribute('stop-color', '#ff9900');
+grad.appendChild(stop3);
+
+defs.appendChild(grad);
+
+// Для создания тени
+const shadow1 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+shadow1.setAttribute('cx', centerX);
+shadow1.setAttribute('cy', centerY);
+shadow1.setAttribute('rx', 0);
+shadow1.setAttribute('ry', 0);
+shadow1.setAttribute('fill', '#fcbd3e');
+shadow1.setAttribute('class', 'animate-ellipse');
+svg.appendChild(shadow1);
+
+const shadow2 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+shadow2.setAttribute('cx', centerX);
+shadow2.setAttribute('cy', centerY);
+shadow2.setAttribute('rx', 0);
+shadow2.setAttribute('ry', 0);
+shadow2.setAttribute('fill', '#fd7a4d');
+shadow2.setAttribute('class', 'animate-ellipse');
+svg.appendChild(shadow2);
+
+const shadow3 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+shadow3.setAttribute('cx', centerX);
+shadow3.setAttribute('cy', centerY);
+shadow3.setAttribute('rx', 0);
+shadow3.setAttribute('ry', 0);
+shadow3.setAttribute('fill', '#ff0b6b');
+shadow3.setAttribute('class', 'animate-ellipse');
+svg.appendChild(shadow3);
+
     const ellipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
     ellipse.setAttribute('cx', centerX);
     ellipse.setAttribute('cy', centerY);
