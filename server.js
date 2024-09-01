@@ -154,7 +154,19 @@ io.on('connection', (socket) => {
         console.log(`Elapsed time: ${elapsedTime}, Remaining time: ${remainingTime}`);
 
         if (currentQuestion.correct === answerIndex) {
-          player.score += 50 + remainingTime/1000;
+          if(remainingTime/1000>20){
+            if(remainingTime/1000>45){
+              player.score += 120;
+            }
+            else{
+              player.score += 90;
+            }
+          }
+          else{
+            player.score += 80;
+          }
+
+         
           console.log("Ответ верный, ваш ответ " + answerIndex);
           console.log("Верный ответ " + currentQuestion.correct);
           console.log("Очки " + player.score);

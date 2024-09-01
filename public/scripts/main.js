@@ -120,6 +120,9 @@ function renderLobby() {
         <button id="ready-button" class="button-main" type="button">
           <span id="ready-text">Готов</span>
         </button>
+        <button id="start-button" class="button-main" type="button" style="display:none;">
+          <span id="ready-text">Начать игру</span>
+        </button>
       </div>
       
     </div>
@@ -141,7 +144,7 @@ function renderLobby() {
 socket.on('show-start-button', (roomId) => {
   const readyButton = document.getElementById('ready-button');
   const readyText = document.getElementById('ready-text');
-  readyText.innerText = 'Начать игру';
+
   if(state.isCreator){
     readyText.innerText = 'Начать игру';
     readyButton.style.display = 'block';
@@ -305,7 +308,7 @@ socket.on('move-player', (players) => {
     if(playerDiv){
       const score = player.score;
       const newLoc = score;
-      playerDiv.style.transform = `translateX(${newLoc}px)`;
+      playerDiv.style.transform = `translateX(${newLoc}%)`;
     }
   })
 })
