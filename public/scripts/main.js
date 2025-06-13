@@ -374,7 +374,8 @@ socket.on('quiz-ended', (roomId)=> {
 
       if(state.isCreator){
       const gameOverlay = document.getElementById('gameOverlay');
-      const winner = state.users.reduce((prev, curr) => (prev.score > curr.score) ? prev : curr);
+      const winner = state.users.sort((a, b) => b.score - a.score)[0];
+
       
       const app = document.getElementById('app');
       app.innerHTML+=`<svg id="overlay" class="svgOver" width="100%" height="100%">
